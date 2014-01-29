@@ -20,36 +20,40 @@ function PrecompilerTestUtil(precompiler) {
 	this._precompilerExtension = precompiler._engineData.moduleName === 'handlebars-base' ? 'handlebars' : 'micro';
 }
 
-PrecompilerTestUtil.prototype = {
-	get precompiler () {
+Object.defineProperty(PrecompilerTestUtil.prototype, 'precompiler', {
+	get: function() {
 		return this._precompiler;
-	},
-
-	get engine () {
-		return this._precompiler._engineData.engine;
-	},
-
-	get engineName () {
-		return this._precompiler._engineData.className;
-	},
-
-	getTestTemplate: function(templateName) {
-		return fs.readFileSync(this.getTestTemplateFilePath(templateName), { encoding: 'utf8' });
-	},
-
-	getTestTemplateFilePath: function(templateName) {
-		return path.join('./test/templates/', templateName + '.' + this._precompilerExtension);
-	},
-
-	streamToPromise: function(stream) {
-		var deferred = Q.defer();
-
-		stream.pipe(concat(function(data) {
-			deferred.resolve(data);
-		}));
-
-		stream.on('error', deferred.reject);
-
-		return deferred.promise;
 	}
+});
+
+Object.defineProperty(PrecompilerTestUtil.prototype, 'engine', {
+	get: function() {
+		return this._precompiler._engineData.engine;
+	}
+});
+
+Object.defineProperty(PrecompilerTestUtil.prototype, 'engineName', {
+	get: function() {
+		return this._precompiler._engineData.className;
+	}
+});
+
+PrecompilerTestUtil.prototype.getTestTemplate = function(templateName) {
+	return fs.readFileSync(this.getTestTemplateFilePath(templateName), { encoding: 'utf8' });
+};
+
+PrecompilerTestUtil.prototype.getTestTemplateFilePath = function(templateName) {
+	return path.join('./test/templates/', templateName + '.' + this._precompilerExtension);
+};
+
+PrecompilerTestUtil.prototype.streamToPromise = function(stream) {
+	var deferred = Q.defer();
+
+	stream.pipe(concat(function(data) {
+		deferred.resolve(data);
+	}));
+
+	stream.on('error', deferred.reject);
+
+	return deferred.promise;
 };
