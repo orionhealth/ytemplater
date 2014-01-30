@@ -1,7 +1,7 @@
 YTemplater
 ==========
 
-[![Build Status](https://secure.travis-ci.org/orionhealth/ytemplater.png?branch=master)](http://travis-ci.org/orionhealth/ytemplater)
+[![Build Status](https://travis-ci.org/orionhealth/ytemplater.png?branch=master)](https://travis-ci.org/orionhealth/ytemplater)
 
 Node.js utility for precompiling templates for use with YUI's Y.Template.
 
