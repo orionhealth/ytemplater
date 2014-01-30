@@ -39,7 +39,7 @@ Object.defineProperty(PrecompilerTestUtil.prototype, 'engineName', {
 });
 
 PrecompilerTestUtil.prototype.getTestTemplate = function(templateName) {
-	return fs.readFileSync(this.getTestTemplateFilePath(templateName), { encoding: 'utf8' });
+	return fs.readFileSync(this.getTestTemplateFilePath(templateName), 'utf8');
 };
 
 PrecompilerTestUtil.prototype.getTestTemplateFilePath = function(templateName) {
