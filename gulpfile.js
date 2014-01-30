@@ -2,7 +2,7 @@ var growl = require('growl'),
 	gulp = require('gulp'),
 	jshint = require('gulp-jshint-cached'),
 	map = require('map-stream'),
-	mocha = require('gulp-spawn-mocha'),
+	mocha = require('gulp-mocha'),
 
 	srcJsFiles = './lib/*.js',
 	testJsFiles = './test/*.test.js',
