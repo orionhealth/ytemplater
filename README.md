@@ -23,6 +23,13 @@ Run `gulp` to lint, test and watch for changes:
     $ gulp
 
 
+## Tests & Coverage
+
+You can also run the tests and generate a test coverage report (using [Istanbul](https://github.com/gotwarlost/istanbul)) with:
+
+    $ npm test --coverage
+
+
 ## License
 
 Copyright (c) 2014 Orion Health MIT License (enclosed)
