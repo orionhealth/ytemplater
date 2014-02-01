@@ -38,6 +38,12 @@ Object.defineProperty(PrecompilerTestUtil.prototype, 'engineName', {
 	}
 });
 
+Object.defineProperty(PrecompilerTestUtil.prototype, 'engineModuleName', {
+	get: function() {
+		return this._precompiler._engineData.moduleName;
+	}
+});
+
 PrecompilerTestUtil.prototype.getTestTemplate = function(templateName) {
 	return fs.readFileSync(this.getTestTemplateFilePath(templateName), 'utf8');
 };
