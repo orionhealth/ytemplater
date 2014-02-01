@@ -26,11 +26,6 @@ PrecompilerTest(function(testUtil) {
 			stream.write(templates[0]);
 			stream.end(templates[1]);
 
-			stream.end({
-				name: 'test-template',
-				template: testUtil.getTestTemplate('food')
-			});
-
 			return promise.then(function(data) {
 				// concat-stream should combine all the boilerplate into a single string
 				expect(data).to.be.a('string');
