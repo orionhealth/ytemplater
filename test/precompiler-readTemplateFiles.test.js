@@ -15,7 +15,7 @@ PrecompilerTest(function(testUtil) {
 			expect(templateData.template).to.equal(testUtil.getTestTemplate(templateName));
 		}
 
-		it('should read a template file\'s contents and determine template name from filename', function() {
+		it('should read a template file\'s contents and determine template name from filename', function(done) {
 			var readFilesStream = precompiler.readTemplateFiles(),
 				promise = testUtil.streamToPromise(readFilesStream),
 				templateName = 'food';
@@ -23,15 +23,17 @@ PrecompilerTest(function(testUtil) {
 			readFilesStream.write(testUtil.getTestTemplateFilePath(templateName));
 			readFilesStream.end();
 
-			return promise.then(function(data) {
+			promise.done(function(data) {
 				// Ensure the empty call to readFilesStream.end() doesn't create an empty/null/etc template
 				expect(data).to.have.length(1);
 
 				expectTemplateDataToMatchTemplateWithName(data[0], templateName);
+
+				done();
 			});
 		});
 
-		it('should stream multiple template files', function() {
+		it('should stream multiple template files', function(done) {
 			var readFilesStream = precompiler.readTemplateFiles(),
 				promise = testUtil.streamToPromise(readFilesStream),
 				templateNames = ['food', 'name'];
@@ -40,10 +42,12 @@ PrecompilerTest(function(testUtil) {
 			readFilesStream.write(testUtil.getTestTemplateFilePath(templateNames[1]));
 			readFilesStream.end();
 
-			return promise.then(function(data) {
+			promise.done(function(data) {
 				expect(data).to.have.length(2);
 				expectTemplateDataToMatchTemplateWithName(data[0], templateNames[0]);
 				expectTemplateDataToMatchTemplateWithName(data[1], templateNames[1]);
+
+				done();
 			});
 		});
 	});

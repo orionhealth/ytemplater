@@ -31,15 +31,17 @@ PrecompilerTest(function(testUtil) {
 			expect(precompiledTemplate).to.have.string('function');
 		}
 
-		it('should precompile a streamed template to a string of JavaScript', function() {
-			return precompile().then(function(templateData) {
+		it('should precompile a streamed template to a string of JavaScript', function(done) {
+			precompile().done(function(templateData) {
 				var precompiledTemplate = templateData.precompiled;
 
 				expectTemplateToBeAStringOfJavaScript(precompiledTemplate);
+
+				done();
 			});
 		});
 
-		it('should precompile multiple template files', function() {
+		it('should precompile multiple template files', function(done) {
 			var precompileStream = precompiler.precompileTemplates(),
 				promise = testUtil.streamToPromise(precompileStream),
 				templates = [{
@@ -53,7 +55,7 @@ PrecompilerTest(function(testUtil) {
 			precompileStream.write(templates[0]);
 			precompileStream.end(templates[1]);
 
-			return promise.then(function(precompiledTemplates) {
+			promise.done(function(precompiledTemplates) {
 				expect(precompiledTemplates).to.have.length(2);
 
 				expect(precompiledTemplates[0].name).equal(templates[0].name);
@@ -61,6 +63,8 @@ PrecompilerTest(function(testUtil) {
 
 				expect(precompiledTemplates[1].name).equal(templates[1].name);
 				expectTemplateToBeAStringOfJavaScript(precompiledTemplates[1].precompiled);
+
+				done();
 			});
 		});
 
@@ -70,13 +74,15 @@ PrecompilerTest(function(testUtil) {
 			/* jshint evil: false */
 		}
 
-		it('should precompile to JavaScript that is revivable with the YUI ' + engineName + ' Template engine', function() {
-			return precompile().then(function(templateData) {
+		it('should precompile to JavaScript that is revivable with the YUI ' + engineName + ' Template engine', function(done) {
+			precompile().done(function(templateData) {
 				var templater = new Template(testUtil.engine),
 					templateFn = templater.revive(evalTemplateFunctionString(templateData.precompiled)),
 					data = { food: 'cake' };
 
 				expect(templateFn(data)).to.equal('My favorite food is cake.\n');
+
+				done();
 			});
 		});
 	});
