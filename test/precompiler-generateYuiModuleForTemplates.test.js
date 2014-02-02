@@ -18,11 +18,11 @@ PrecompilerTest(function(testUtil) {
 			yuiModuleContents;
 
 		before(function() {
-			var stream = precompiler.generateYuiModuleForTemplates(testTemplateModuleData),
-				promise = testUtil.streamToPromise(stream);
+			var generateModuleStream = precompiler.generateYuiModuleForTemplates(testTemplateModuleData),
+				promise = testUtil.streamToPromise(generateModuleStream);
 
-			stream.write(mockTemplateCodeSnippets[0]);
-			stream.end(mockTemplateCodeSnippets[1]);
+			generateModuleStream.write(mockTemplateCodeSnippets[0]);
+			generateModuleStream.end(mockTemplateCodeSnippets[1]);
 
 			return promise.then(function(data) {
 				expect(data).to.be.a('string');

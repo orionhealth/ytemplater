@@ -15,16 +15,16 @@ PrecompilerTest(function(testUtil) {
 			boilerplate;
 
 		before(function() {
-			var stream = precompiler.addReviveTemplateBoilerplate(),
-				promise = testUtil.streamToPromise(stream);
+			var addBoilerplateStream = precompiler.addReviveTemplateBoilerplate(),
+				promise = testUtil.streamToPromise(addBoilerplateStream);
 
 			templates.forEach(function(template) {
 				template.template = testUtil.getTestTemplate(template.name);
 				template.precompiled = new Template(testUtil.engine).precompile(template.template);
 			});
 
-			stream.write(templates[0]);
-			stream.end(templates[1]);
+			addBoilerplateStream.write(templates[0]);
+			addBoilerplateStream.end(templates[1]);
 
 			return promise.then(function(data) {
 				// concat-stream should combine all the boilerplate into a single string

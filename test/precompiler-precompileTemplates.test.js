@@ -13,10 +13,10 @@ PrecompilerTest(function(testUtil) {
 		});
 
 		function precompile() {
-			var stream = precompiler.precompileTemplates(),
-				promise = testUtil.streamToPromise(stream);
+			var precompileStream = precompiler.precompileTemplates(),
+				promise = testUtil.streamToPromise(precompileStream);
 
-			stream.end({
+			precompileStream.end({
 				name: 'test-template',
 				template: testUtil.getTestTemplate('food')
 			});
@@ -40,8 +40,8 @@ PrecompilerTest(function(testUtil) {
 		});
 
 		it('should precompile multiple template files', function() {
-			var stream = precompiler.precompileTemplates(),
-				promise = testUtil.streamToPromise(stream),
+			var precompileStream = precompiler.precompileTemplates(),
+				promise = testUtil.streamToPromise(precompileStream),
 				templates = [{
 					name: 'test-template1',
 					template: testUtil.getTestTemplate('name')
@@ -50,8 +50,8 @@ PrecompilerTest(function(testUtil) {
 					template: testUtil.getTestTemplate('food')
 				}];
 
-			stream.write(templates[0]);
-			stream.end(templates[1]);
+			precompileStream.write(templates[0]);
+			precompileStream.end(templates[1]);
 
 			return promise.then(function(precompiledTemplates) {
 				expect(precompiledTemplates).to.have.length(2);

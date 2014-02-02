@@ -16,15 +16,15 @@ PrecompilerTest(function(testUtil) {
 		}
 
 		it('should read a template file\'s contents and determine template name from filename', function() {
-			var stream = precompiler.readTemplateFiles(),
-				promise = testUtil.streamToPromise(stream),
+			var readFilesStream = precompiler.readTemplateFiles(),
+				promise = testUtil.streamToPromise(readFilesStream),
 				templateName = 'food';
 
-			stream.write(testUtil.getTestTemplateFilePath(templateName));
-			stream.end();
+			readFilesStream.write(testUtil.getTestTemplateFilePath(templateName));
+			readFilesStream.end();
 
 			return promise.then(function(data) {
-				// Ensure the empty call to stream.end() doesn't create an empty/null/etc template
+				// Ensure the empty call to readFilesStream.end() doesn't create an empty/null/etc template
 				expect(data).to.have.length(1);
 
 				expectTemplateDataToMatchTemplateWithName(data[0], templateName);
@@ -32,13 +32,13 @@ PrecompilerTest(function(testUtil) {
 		});
 
 		it('should stream multiple template files', function() {
-			var stream = precompiler.readTemplateFiles(),
-				promise = testUtil.streamToPromise(stream),
+			var readFilesStream = precompiler.readTemplateFiles(),
+				promise = testUtil.streamToPromise(readFilesStream),
 				templateNames = ['food', 'name'];
 
-			stream.write(testUtil.getTestTemplateFilePath(templateNames[0]));
-			stream.write(testUtil.getTestTemplateFilePath(templateNames[1]));
-			stream.end();
+			readFilesStream.write(testUtil.getTestTemplateFilePath(templateNames[0]));
+			readFilesStream.write(testUtil.getTestTemplateFilePath(templateNames[1]));
+			readFilesStream.end();
 
 			return promise.then(function(data) {
 				expect(data).to.have.length(2);
