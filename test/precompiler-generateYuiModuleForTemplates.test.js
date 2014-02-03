@@ -48,28 +48,45 @@ PrecompilerTest(function(testUtil) {
 			expect(yuiModuleContents).to.have.string('}, \'' + testTemplateModuleData.version + '\',');
 		});
 
-		function expectYuiModuleContentsToRequire(moduleName) {
+		function expectYuiModuleContentsToRequire(moduleContents, moduleName) {
 			var requiresDeclaration = ', { requires: [',
 				requiresContents;
 
-			expect(yuiModuleContents).to.have.string(requiresDeclaration);
+			expect(moduleContents).to.have.string(requiresDeclaration);
 
-			requiresContents = yuiModuleContents.substring(yuiModuleContents.indexOf(requiresDeclaration));
+			requiresContents = moduleContents.substring(moduleContents.indexOf(requiresDeclaration));
 
 			expect(requiresContents).to.have.string('\'' + moduleName + '\'');
 		}
 
 		it('should generate a YUI module that requires `template-base`', function() {
-			expectYuiModuleContentsToRequire('template-base');
+			expectYuiModuleContentsToRequire(yuiModuleContents, 'template-base');
 		});
 
 		it('should generate a YUI module that requires the template engine module', function() {
-			expectYuiModuleContentsToRequire(testUtil.engineModuleName);
+			expectYuiModuleContentsToRequire(yuiModuleContents, testUtil.engineModuleName);
 		});
 
 		it('should generate a YUI module that requires the given additional dependencies', function() {
 			testTemplateModuleData.dependencies.forEach(function(additionalDependency) {
-				expectYuiModuleContentsToRequire(additionalDependency);
+				expectYuiModuleContentsToRequire(yuiModuleContents, additionalDependency);
+			});
+		});
+
+		it('should generate a module that requires `template-base` and the engine even if no extra dependencies given', function(done) {
+			var generateModuleStream = precompiler.generateYuiModuleForTemplates({
+					name: 'test-module-no-optional-dependencies',
+					version: '1.2.3'
+				}),
+				promise = testUtil.streamToPromise(generateModuleStream);
+
+			generateModuleStream.end('// TODO: implement me');
+
+			promise.done(function(moduleContents) {
+				expectYuiModuleContentsToRequire(moduleContents, 'template-base');
+				expectYuiModuleContentsToRequire(moduleContents, testUtil.engineModuleName);
+
+				done();
 			});
 		});
 	});

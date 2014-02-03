@@ -1,3 +1,5 @@
+/* jshint expr:true */
+
 var expect = require('chai').expect,
 	stream = require('stream'),
 	PrecompilerTest = require('./precompiler-test');
@@ -47,6 +49,22 @@ PrecompilerTest(function(testUtil) {
 				expectTemplateDataToMatchTemplateWithName(data[0], templateNames[0]);
 				expectTemplateDataToMatchTemplateWithName(data[1], templateNames[1]);
 
+				done();
+			});
+		});
+
+		it('should emit an error event if an error is encountered reading the file', function(done) {
+			var readFilesStream = precompiler.readTemplateFiles(),
+				errorThrown = false;
+
+			readFilesStream.on('error', function() {
+				errorThrown = true;
+			});
+
+			readFilesStream.write(testUtil.getTestTemplateFilePath('this_template_file_does_not_exist'));
+
+			setTimeout(function() {
+				expect(errorThrown).to.be.true;
 				done();
 			});
 		});
