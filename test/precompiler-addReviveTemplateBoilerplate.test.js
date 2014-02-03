@@ -26,7 +26,7 @@ PrecompilerTest(function(testUtil) {
 			addBoilerplateStream.write(templates[0]);
 			addBoilerplateStream.end(templates[1]);
 
-			return promise.then(function(data) {
+			return promise.done(function(data) {
 				// concat-stream should combine all the boilerplate into a single string
 				expect(data).to.be.a('string');
 

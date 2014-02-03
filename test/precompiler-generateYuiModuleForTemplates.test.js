@@ -24,7 +24,7 @@ PrecompilerTest(function(testUtil) {
 			generateModuleStream.write(mockTemplateCodeSnippets[0]);
 			generateModuleStream.end(mockTemplateCodeSnippets[1]);
 
-			return promise.then(function(data) {
+			return promise.done(function(data) {
 				expect(data).to.be.a('string');
 				yuiModuleContents = data;
 			});
