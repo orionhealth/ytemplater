@@ -66,7 +66,7 @@ PrecompilerTest(function(testUtil) {
 			setTimeout(function() {
 				expect(errorThrown).to.be.true;
 				done();
-			});
+			}, 10);
 		});
 	});
 });
