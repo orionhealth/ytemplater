@@ -2,6 +2,9 @@
   "name": "ytemplater",
   "version": "0.0.1",
   "description": "Node.js utility for precompiling templates for use with YUI's Y.Template.",
+  "bin": {
+    "ytemplater": "./bin/ytemplater"
+  },
   "scripts": {
     "test": "istanbul test --print both ./node_modules/mocha/bin/_mocha test/*.js",
     "posttest": "istanbul check-coverage --statements 90 --functions 90 --branches 90 --lines 90"
@@ -17,7 +20,8 @@
     "through": "~2.3.4",
     "concat-stream": "~1.4.1",
     "map-stream": "~0.1.0",
-    "stream-combiner": "0.0.4"
+    "stream-combiner": "0.0.4",
+    "optimist": "~0.6.0"
   },
   "devDependencies": {
     "chai": "~1.8.1",
