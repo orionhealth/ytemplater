@@ -2,6 +2,7 @@ var concat = require('concat-stream'),
 	fs = require('fs'),
 	path = require('path'),
 	Q = require('q'),
+	Template = require('yui/template').Template,
 
 	precompilers = ['handlebars-precompiler', 'micro-precompiler'];
 
@@ -44,12 +45,26 @@ Object.defineProperty(PrecompilerTestUtil.prototype, 'engineModuleName', {
 	}
 });
 
+Object.defineProperty(PrecompilerTestUtil.prototype, 'templater', {
+	get: function() {
+		if (!this._templater) {
+			this._templater = new Template(this.engine);
+		}
+		return this._templater;
+	}
+});
+
 PrecompilerTestUtil.prototype.getTestTemplate = function(templateName) {
 	return fs.readFileSync(this.getTestTemplateFilePath(templateName), 'utf8');
 };
 
 PrecompilerTestUtil.prototype.getTestTemplateFilePath = function(templateName) {
 	return path.join('./test/templates/', templateName + '.' + this._precompilerExtension);
+};
+
+PrecompilerTestUtil.prototype.getExpectedTemplateReviveCode = function(templateName) {
+	var precompiledTemplate = this.templater.precompile(this.getTestTemplate(templateName));
+	return 'Y.Template.register(\'' + templateName + '\', engine.revive(' + precompiledTemplate + '));\n\n';
 };
 
 PrecompilerTestUtil.prototype.streamToPromise = function(stream) {
