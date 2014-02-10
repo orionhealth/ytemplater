@@ -19,10 +19,11 @@ describe('readTemplateFiles()', function() {
 
 		function expectTemplateDataToMatchTemplateWithName(templateData, templateName) {
 			expect(templateData.name).to.equal(templateName);
+			expect(templateData.engineId).to.equal(engineId);
 			expect(templateData.template).to.equal(testUtil.getTestTemplate(templateName));
 		}
 
-		it('should read a ' + engineId + ' template file\'s contents and determine template name from filename', function(done) {
+		it('should read a ' + engineId + ' template file\'s contents and determine template name and engineId', function(done) {
 			var readFilesStream = readTemplateFiles(),
 				promise = testUtils.streamToPromise(readFilesStream),
 				templateName = 'food';
@@ -107,6 +108,7 @@ describe('readTemplateFiles()', function() {
 
 		function expectTemplateDataToMatchTemplateWithName(templateData, templateInfo) {
 			expect(templateData.name).to.equal(templateInfo.name);
+			expect(templateData.engineId).to.equal(templateInfo.engineId);
 			expect(templateData.template).to.equal(testUtils.getTestTemplate(templateInfo.name, templateInfo.engineId));
 		}
 
