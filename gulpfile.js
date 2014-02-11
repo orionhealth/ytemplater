@@ -20,10 +20,9 @@ function notifyTestsFailed() {
 	growl('Tests failed!', { name: 'Mocha' });
 }
 
-function lintTestNotify() {
-	gulp.run('lint');
+gulp.task('lint-test-notify', ['lint'], function() {
 	test().on('error', notifyTestsFailed);
-}
+});
 
 gulp.task('lint', function() {
 	var failDetected = false;
@@ -51,7 +50,6 @@ gulp.task('test', function() {
 		});
 });
 
-gulp.task('default', function() {
-	lintTestNotify();
-	gulp.watch('{lib,test}/*', lintTestNotify);
+gulp.task('default', ['lint-test-notify'], function() {
+	gulp.watch('{lib,test}/*', ['lint-test-notify']);
 });
