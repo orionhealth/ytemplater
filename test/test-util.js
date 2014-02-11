@@ -72,7 +72,7 @@ TestUtil.prototype.getExpectedTemplateReviveCode = function(templateName) {
 };
 
 function getTestTemplate(templateName, engineId) {
-	return fs.readFileSync(getTestTemplateFilePath(templateName, engineId), 'utf8');
+	return fs.readFileSync(getTestTemplateFilePath(templateName, engineId), { encoding: 'utf8' });
 }
 exports.getTestTemplate = getTestTemplate;
 

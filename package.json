@@ -34,5 +34,8 @@
     "gulp-notify": "~0.4.1",
     "growl": "~1.7.0",
     "gulp-mocha": "~0.4.1"
+  },
+  "engines": {
+    "node": ">= 0.9"
   }
 }
