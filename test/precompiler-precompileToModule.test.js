@@ -26,7 +26,7 @@ PrecompilerTest(function(testUtil) {
 					expect(yuiModuleContents).to.equal(
 						'YUI.add(\'' + testTemplateModuleData.name + '\', function(Y) {\n\n' +
 
-						'var engine = new Y.Template(' + testUtil.engineName + ');\n\n' +
+						'var ' + testUtil._engineId + 'Engine = new Y.Template(' + testUtil.engineName + ');\n\n' +
 
 						testUtil.getExpectedTemplateReviveCode(templateNames[0]) +
 						testUtil.getExpectedTemplateReviveCode(templateNames[1]) +

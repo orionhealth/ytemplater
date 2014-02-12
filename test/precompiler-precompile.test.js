@@ -21,7 +21,7 @@ PrecompilerTest(function(testUtil) {
 			precompiler.precompile(templatePaths)
 				.pipe(concat(function(yuiModuleContents) {
 					expect(yuiModuleContents).to.equal(
-						'var engine = new Y.Template(' + testUtil.engineName + ');\n\n' +
+						'var ' + testUtil._engineId + 'Engine = new Y.Template(' + testUtil.engineName + ');\n\n' +
 
 						testUtil.getExpectedTemplateReviveCode(templateNames[0]) +
 						testUtil.getExpectedTemplateReviveCode(templateNames[1])

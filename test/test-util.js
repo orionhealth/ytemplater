@@ -68,7 +68,7 @@ TestUtil.prototype.getTestTemplateFilePath = function(templateName) {
 
 TestUtil.prototype.getExpectedTemplateReviveCode = function(templateName) {
 	var precompiledTemplate = this.templater.precompile(this.getTestTemplate(templateName));
-	return 'Y.Template.register(\'' + templateName + '\', engine.revive(' + precompiledTemplate + '));\n\n';
+	return 'Y.Template.register(\'' + templateName + '\', ' + this._engineId + 'Engine.revive(' + precompiledTemplate + '));\n\n';
 };
 
 function getTestTemplate(templateName, engineId) {
