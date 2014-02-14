@@ -67,9 +67,16 @@ TestUtil.prototype.getTestTemplateFilePath = function(templateName) {
 };
 
 TestUtil.prototype.getExpectedTemplateReviveCode = function(templateName) {
-	var precompiledTemplate = this.templater.precompile(this.getTestTemplate(templateName));
-	return 'Y.Template.register(\'' + templateName + '\', ' + this._engineId + 'Engine.revive(' + precompiledTemplate + '));\n\n';
+	return getExpectedTemplateReviveCode(templateName, this._engineId);
 };
+
+function getExpectedTemplateReviveCode(templateName, engineId) {
+	var templater = new Template(Engines[engineId].engine),
+		precompiledTemplate = templater.precompile(getTestTemplate(templateName, engineId));
+
+	return 'Y.Template.register(\'' + templateName + '\', ' + engineId + 'Engine.revive(' + precompiledTemplate + '));\n\n';
+}
+exports.getExpectedTemplateReviveCode = getExpectedTemplateReviveCode;
 
 function getTestTemplate(templateName, engineId) {
 	return fs.readFileSync(getTestTemplateFilePath(templateName, engineId), { encoding: 'utf8' });
