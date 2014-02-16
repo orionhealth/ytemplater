@@ -69,6 +69,10 @@ TestUtil.prototype.getTestTemplateFilePath = function(templateName) {
 TestUtil.prototype.getExpectedTemplateReviveCode = function(templateName) {
 	return getExpectedTemplateReviveCode(templateName, this._engineId);
 };
+function getExpectedEngineDeclarationCode(engineId) {
+	return 'var ' + engineId + 'Engine = new Y.Template(' + Engines[engineId].className + ');\n\n';
+}
+exports.getExpectedEngineDeclarationCode = getExpectedEngineDeclarationCode;
 
 function getExpectedTemplateReviveCode(templateName, engineId) {
 	var templater = new Template(Engines[engineId].engine),
