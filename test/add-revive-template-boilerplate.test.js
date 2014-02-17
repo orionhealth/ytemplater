@@ -39,6 +39,10 @@ describe('add-revive-template-boilerplate', function() {
 		});
 	});
 
+	it('should export a function', function() {
+		expect(addReviveTemplateBoilerplate).to.be.a('function');
+	});
+
 	it('should return a stream for wrapping precompiled templates in revive boilerplate code', function() {
 		expect(addReviveTemplateBoilerplate()).to.be.an.instanceOf(stream);
 	});

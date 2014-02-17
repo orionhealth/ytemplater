@@ -7,8 +7,12 @@ var expect = require('chai').expect,
 	Engines = require('../lib/engines'),
 	readTemplateFiles = require('../lib/read-template-files');
 
-describe('readTemplateFiles()', function() {
+describe('read-template-files', function() {
 	var engineIds = Object.keys(Engines);
+
+	it('should export a function', function() {
+		expect(readTemplateFiles).to.be.a('function');
+	});
 
 	it('should return a stream for reading template file contents', function() {
 		expect(readTemplateFiles()).to.be.an.instanceOf(stream);

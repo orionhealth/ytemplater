@@ -7,8 +7,12 @@ var expect = require('chai').expect,
 	Engines = require('../lib/engines'),
 	precompileTemplates = require('../lib/precompile-templates');
 
-describe('precompileTemplates()', function() {
+describe('precompile-templates', function() {
 	var engineIds = Object.keys(Engines);
+
+	it('should export a function', function() {
+		expect(precompileTemplates).to.be.a('function');
+	});
 
 	it('should return a stream for precompiling YUI templates', function() {
 		expect(precompileTemplates()).to.be.an.instanceOf(stream);

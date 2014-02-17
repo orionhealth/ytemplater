@@ -13,6 +13,14 @@ describe('generate-yui-module-for-templates', function() {
 			version: '3.1.4'
 		};
 
+	it('should export a function', function() {
+		expect(generateYuiModuleForTemplates).to.be.a('function');
+	});
+
+	it('should return a stream for generating a YUI module for precompiled templates', function() {
+		expect(generateYuiModuleForTemplates({})).to.be.an.instanceOf(stream);
+	});
+
 	function generateTestYuiModule(codeSnippets) {
 		var generateModuleStream = generateYuiModuleForTemplates(testTemplateModuleData),
 			promise = testUtil.streamToPromise(generateModuleStream);
@@ -28,10 +36,6 @@ describe('generate-yui-module-for-templates', function() {
 			return yuiModuleContents;
 		});
 	}
-
-	it('should return a stream for generating a YUI module for precompiled templates', function() {
-		expect(generateYuiModuleForTemplates({})).to.be.an.instanceOf(stream);
-	});
 
 	it('should generate a YUI module with the given module name', function(done) {
 		generateTestYuiModule().done(function(yuiModuleContents) {
