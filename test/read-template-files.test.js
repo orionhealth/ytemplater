@@ -2,7 +2,7 @@
 
 var expect = require('chai').expect,
 	stream = require('stream'),
-	testUtils = require('./test-util'),
+	testUtil = require('./test-util'),
 
 	Engines = require('../lib/engines'),
 	readTemplateFiles = require('../lib/read-template-files');
@@ -15,20 +15,18 @@ describe('readTemplateFiles()', function() {
 	});
 
 	engineIds.forEach(function(engineId) {
-		var testUtil = new testUtils.TestUtil(engineId);
-
 		function expectTemplateDataToMatchTemplateWithName(templateData, templateName) {
 			expect(templateData.name).to.equal(templateName);
 			expect(templateData.engineId).to.equal(engineId);
-			expect(templateData.template).to.equal(testUtil.getTestTemplate(templateName));
+			expect(templateData.template).to.equal(testUtil.getTestTemplate(templateName, engineId));
 		}
 
 		it('should read a ' + engineId + ' template file\'s contents and determine template name and engineId', function(done) {
 			var readFilesStream = readTemplateFiles(),
-				promise = testUtils.streamToPromise(readFilesStream),
+				promise = testUtil.streamToPromise(readFilesStream),
 				templateName = 'food';
 
-			readFilesStream.write(testUtil.getTestTemplateFilePath(templateName));
+			readFilesStream.write(testUtil.getTestTemplateFilePath(templateName, engineId));
 			readFilesStream.end();
 
 			promise.done(function(data) {
@@ -43,11 +41,11 @@ describe('readTemplateFiles()', function() {
 
 		it('should stream multiple ' + engineId + ' template files', function(done) {
 			var readFilesStream = readTemplateFiles(),
-				promise = testUtils.streamToPromise(readFilesStream),
+				promise = testUtil.streamToPromise(readFilesStream),
 				templateNames = ['food', 'name'];
 
-			readFilesStream.write(testUtil.getTestTemplateFilePath(templateNames[0]));
-			readFilesStream.write(testUtil.getTestTemplateFilePath(templateNames[1]));
+			readFilesStream.write(testUtil.getTestTemplateFilePath(templateNames[0], engineId));
+			readFilesStream.write(testUtil.getTestTemplateFilePath(templateNames[1], engineId));
 			readFilesStream.end();
 
 			promise.done(function(data) {
@@ -87,7 +85,7 @@ describe('readTemplateFiles()', function() {
 			errorThrown = true;
 		});
 
-		readFilesStream.write(testUtils.getTestTemplateFilePath('not-a-template', 'txt'));
+		readFilesStream.write(testUtil.getTestTemplateFilePath('not-a-template', 'txt'));
 
 		setTimeout(function() {
 			expect(errorThrown).to.be.true;
@@ -97,7 +95,7 @@ describe('readTemplateFiles()', function() {
 
 	it('should stream multiple template files of different types', function(done) {
 		var readFilesStream = readTemplateFiles(),
-			promise = testUtils.streamToPromise(readFilesStream),
+			promise = testUtil.streamToPromise(readFilesStream),
 			templates = [{
 				name: 'food',
 				engineId: 'handlebars'
@@ -109,11 +107,11 @@ describe('readTemplateFiles()', function() {
 		function expectTemplateDataToMatchTemplateWithName(templateData, templateInfo) {
 			expect(templateData.name).to.equal(templateInfo.name);
 			expect(templateData.engineId).to.equal(templateInfo.engineId);
-			expect(templateData.template).to.equal(testUtils.getTestTemplate(templateInfo.name, templateInfo.engineId));
+			expect(templateData.template).to.equal(testUtil.getTestTemplate(templateInfo.name, templateInfo.engineId));
 		}
 
-		readFilesStream.write(testUtils.getTestTemplateFilePath(templates[0].name, templates[0].engineId));
-		readFilesStream.write(testUtils.getTestTemplateFilePath(templates[1].name, templates[1].engineId));
+		readFilesStream.write(testUtil.getTestTemplateFilePath(templates[0].name, templates[0].engineId));
+		readFilesStream.write(testUtil.getTestTemplateFilePath(templates[1].name, templates[1].engineId));
 		readFilesStream.end();
 
 		promise.done(function(data) {

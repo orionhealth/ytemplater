@@ -2,7 +2,7 @@ var expect = require('chai').expect,
 	stream = require('stream'),
 	Template = require('yui/template').Template,
 
-	testUtils = require('./test-util'),
+	testUtil = require('./test-util'),
 
 	Engines = require('../lib/engines'),
 	precompileTemplates = require('../lib/precompile-templates');
@@ -20,16 +20,16 @@ describe('precompileTemplates()', function() {
 	}
 
 	engineIds.forEach(function(engineId) {
-		var testUtil = new testUtils.TestUtil(engineId);
+		var engineInfo = Engines[engineId];
 
 		function precompile() {
 			var precompileStream = precompileTemplates(),
-				promise = testUtils.streamToPromise(precompileStream);
+				promise = testUtil.streamToPromise(precompileStream, engineId);
 
 			precompileStream.end({
 				name: 'test-template',
 				engineId: engineId,
-				template: testUtil.getTestTemplate('food')
+				template: testUtil.getTestTemplate('food', engineId)
 			});
 
 			return promise.then(function(data) {
@@ -49,15 +49,15 @@ describe('precompileTemplates()', function() {
 
 		it('should precompile multiple template files', function(done) {
 			var precompileStream = precompileTemplates(),
-				promise = testUtils.streamToPromise(precompileStream),
+				promise = testUtil.streamToPromise(precompileStream, engineId),
 				templates = [{
 					name: 'test-template1',
 					engineId: engineId,
-					template: testUtil.getTestTemplate('name')
+					template: testUtil.getTestTemplate('name', engineId)
 				}, {
 					name: 'test-template2',
 					engineId: engineId,
-					template: testUtil.getTestTemplate('food')
+					template: testUtil.getTestTemplate('food', engineId)
 				}];
 
 			precompileStream.write(templates[0]);
@@ -82,9 +82,9 @@ describe('precompileTemplates()', function() {
 			/* jshint evil: false */
 		}
 
-		it('should precompile to JavaScript that is revivable with the YUI ' + testUtil.engineName + ' Template engine', function(done) {
+		it('should precompile to JavaScript that is revivable with the YUI ' + engineInfo.className + ' Template engine', function(done) {
 			precompile().done(function(templateData) {
-				var templater = new Template(testUtil.engine),
+				var templater = new Template(engineInfo.engine),
 					templateFn = templater.revive(evalTemplateFunctionString(templateData.precompiled)),
 					data = { food: 'cake' };
 
@@ -97,15 +97,15 @@ describe('precompileTemplates()', function() {
 
 	it('should precompile multiple template files from different templating engines', function(done) {
 		var precompileStream = precompileTemplates(),
-			promise = testUtils.streamToPromise(precompileStream),
+			promise = testUtil.streamToPromise(precompileStream),
 			templates = [{
 				name: 'test-template1',
 				engineId: 'handlebars',
-				template: testUtils.getTestTemplate('name', 'handlebars')
+				template: testUtil.getTestTemplate('name', 'handlebars')
 			}, {
 				name: 'test-template2',
 				engineId: 'micro',
-				template: testUtils.getTestTemplate('food', 'micro')
+				template: testUtil.getTestTemplate('food', 'micro')
 			}];
 
 		precompileStream.write(templates[0]);

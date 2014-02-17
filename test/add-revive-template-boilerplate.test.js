@@ -1,7 +1,8 @@
 var expect = require('chai').expect,
 	stream = require('stream'),
-	testUtils = require('./test-util'),
 	Template = require('yui/template-base').Template,
+
+	testUtil = require('./test-util'),
 
 	Engines = require('../lib/engines'),
 	addReviveTemplateBoilerplate = require('../lib/add-revive-template-boilerplate');
@@ -18,12 +19,12 @@ describe('add-revive-template-boilerplate', function() {
 
 	before(function() {
 		var addBoilerplateStream = addReviveTemplateBoilerplate(),
-			promise = testUtils.streamToPromise(addBoilerplateStream);
+			promise = testUtil.streamToPromise(addBoilerplateStream);
 
 		templates.forEach(function(template) {
 			var engineId = template.engineId;
 
-			template.template = testUtils.getTestTemplate(template.name, engineId);
+			template.template = testUtil.getTestTemplate(template.name, engineId);
 			template.precompiled = new Template(Engines[engineId].engine).precompile(template.template);
 		});
 
@@ -43,7 +44,7 @@ describe('add-revive-template-boilerplate', function() {
 	});
 
 	function expectEngineDeclarationBeforeFirstRevive(engineId) {
-		var declaration = 'var ' + engineId + 'Engine = new Y.Template(' + Engines[engineId].className + ');',
+		var declaration = testUtil.getExpectedEngineDeclarationCode(engineId),
 			indexOfDeclaration,
 			indexOfFirstRevive;
 
