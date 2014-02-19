@@ -8,10 +8,12 @@ var growl = require('growl'),
 	testJsFiles = './test/*.test.js',
 	allJsFiles = [srcJsFiles, testJsFiles];
 
+// Require the test setup module as the --require option can only be used via commandline execution of mocha
+require('./test/setup.js');
+
 function test() {
 	return gulp.src(testJsFiles, { read: false })
 		.pipe(mocha({
-			require: './test/setup.js',
 			reporter: 'nyan'
 		}));
 }
