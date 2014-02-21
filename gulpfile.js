@@ -1,57 +1,64 @@
 var growl = require('growl'),
 	gulp = require('gulp'),
 	jshint = require('gulp-jshint-cached'),
-	map = require('map-stream'),
 	mocha = require('gulp-mocha'),
+	through = require('through'),
 
-	srcJsFiles = './lib/*.js',
-	testJsFiles = './test/*.test.js',
-	allJsFiles = [srcJsFiles, testJsFiles];
+	paths = {
+		scripts: './lib/*.js',
+		tests: './test/*.test.js'
+	};
 
 // Require the test setup module as the --require option can only be used via commandline execution of mocha
 require('./test/setup.js');
 
-function test() {
-	return gulp.src(testJsFiles, { read: false })
+function test(notifyOnFail) {
+	var stream = gulp.src(paths.tests, { read: false })
 		.pipe(mocha({
 			reporter: 'nyan'
 		}));
+
+	if (notifyOnFail) {
+		stream.on('error', function() {
+			growl('Tests failed!', { name: 'Mocha' });
+		});
+	}
+
+	return stream;
 }
 
-function notifyTestsFailed() {
-	growl('Tests failed!', { name: 'Mocha' });
-}
-
-gulp.task('lint-test-notify', ['lint'], function() {
-	test().on('error', notifyTestsFailed);
-});
-
-gulp.task('lint', function() {
+function notifyOnJshintFail() {
 	var failDetected = false;
 
-	gulp.src(allJsFiles)
-		.pipe(jshint.cached())
-		.pipe(map(function(file, callback) {
+	return through(function write(file) {
 			if (!file.jshint.success) {
 				failDetected = true;
 			}
-			callback(null, file);
-		}))
-		.pipe(jshint.reporter('default'))
-		.on('end', function() {
+			this.queue(file);
+		}, function end() {
 			if (failDetected) {
 				growl('JSHint failed!', { name: 'JSHint' });
 			}
+			this.queue(null);
 		});
+}
+
+gulp.task('lint', function() {
+	return gulp.src([paths.scripts, paths.tests])
+		.pipe(jshint.cached())
+		.pipe(notifyOnJshintFail())
+		.pipe(jshint.reporter('default'));
 });
 
 gulp.task('test', function() {
-	return test()
-		.on('error', function(error) {
-			throw error;
-		});
+	return test();
 });
 
-gulp.task('default', ['lint-test-notify'], function() {
-	gulp.watch('{lib,test}/*', ['lint-test-notify']);
+gulp.task('on-watch', ['lint'], function() {
+	// Don't return, otherwise failed tests will kill the watch
+	test(true);
+});
+
+gulp.task('default', ['on-watch'], function() {
+	gulp.watch('{lib,test}/*', ['on-watch']);
 });
