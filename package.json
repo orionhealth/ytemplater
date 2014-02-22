@@ -2,6 +2,7 @@
   "name": "ytemplater",
   "version": "0.0.1",
   "description": "Node.js utility for precompiling templates for use with YUI's Y.Template.",
+  "main": "./lib/ytemplater.js",
   "bin": {
     "ytemplater": "./bin/ytemplater"
   },

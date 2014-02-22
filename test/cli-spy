@@ -1,0 +1,12 @@
+#!/usr/bin/env node
+
+var Q = require('q'),
+	ytemplater = require('../lib/ytemplater');
+
+// stub the precompile method to print the passed args to stdout so the test can inspect them
+ytemplater.precompile = function() {
+	process.stdout.write('__spy__' + JSON.stringify(Array.prototype.slice.call(arguments)) + '__spy__\n');
+	return Q();
+};
+
+require('../lib/cli');
