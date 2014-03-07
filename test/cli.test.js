@@ -1,33 +1,24 @@
 var expect = require('chai').expect,
 
-	exec = require('child_process').exec,
 	path = require('path'),
-	Q = require('q');
+
+	cliSpy = require('cli-spy');
 
 describe('ytemplater CLI', function() {
-	var cli = path.join(__dirname, 'cli-spy'),
-		argStrRegexp = /__spy__(.*)__spy__/,
+	var cli = cliSpy('./lib/cli', function() {
+			var Q = require('q');
+			// stub the precompile method to print the passed args to stdout so the test can inspect them
+			require('./lib/ytemplater').precompile = function() {
+				/*__spy__*/
+				return Q();
+			};
+		}),
 		templatesDir = path.join(__dirname, 'templates');
 
-	function execCli(argStr, opts) {
-		var deferred = Q.defer();
-
-		exec(cli + ' ' + argStr, opts || {}, function(err, stdout, stderr) {
-			if (err) {
-				return deferred.reject(err);
-			}
-
-			var spiedArgStr = stdout.match(argStrRegexp)[1];
-			deferred.resolve(JSON.parse(spiedArgStr));
-		});
-
-		return deferred.promise;
-	}
-
 	it('should expand globs to the list of applicable files', function() {
-		return execCli(path.join(templatesDir, '*.handlebars'))
-			.then(function(args) {
-				var files = args[0];
+		return cli.exec(path.join(templatesDir, '*.handlebars'))
+			.then(function(cliInfo) {
+				var files = cliInfo.args[0];
 
 				expect(files).to.be.a('array');
 				expect(files).to.have.length(2);
@@ -39,9 +30,9 @@ describe('ytemplater CLI', function() {
 
 	it('should pass the output directory specified via --out', function() {
 		var outputDir = 'test-output-dir';
-		return execCli('*.micro --out ' + outputDir)
-			.then(function(args) {
-				var options = args[1];
+		return cli.exec('*.micro --out ' + outputDir)
+			.then(function(cliInfo) {
+				var options = cliInfo.args[1];
 
 				expect(options).to.contain.keys(['out']);
 				expect(options.out).to.equal(outputDir);
@@ -50,9 +41,9 @@ describe('ytemplater CLI', function() {
 
 	it('should pass the output directory specified via -o', function() {
 		var outputDir = 'test-output-dir';
-		return execCli('*.micro -o ' + outputDir)
-			.then(function(args) {
-				var options = args[1];
+		return cli.exec('*.micro -o ' + outputDir)
+			.then(function(cliInfo) {
+				var options = cliInfo.args[1];
 
 				expect(options).to.contain.keys(['out']);
 				expect(options.out).to.equal(outputDir);
@@ -60,9 +51,9 @@ describe('ytemplater CLI', function() {
 	});
 
 	it('should default the output directory to the cwd', function() {
-		return execCli('*.micro')
-			.then(function(args) {
-				var options = args[1];
+		return cli.exec('*.micro')
+			.then(function(cliInfo) {
+				var options = cliInfo.args[1];
 
 				expect(options).to.contain.keys(['out']);
 				expect(options.out).to.equal(process.cwd());

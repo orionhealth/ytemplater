@@ -35,7 +35,8 @@
     "growl": "~1.7.0",
     "gulp-mocha": "~0.4.1",
     "rimraf": "~2.2.6",
-    "chai-fs": "0.0.3"
+    "chai-fs": "0.0.3",
+    "cli-spy": "^0.1.0"
   },
   "engines": {
     "node": ">= 0.9"
