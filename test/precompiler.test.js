@@ -7,7 +7,7 @@ var concat = require('concat-stream'),
 	precompiler = require('../lib/precompiler'),
 	Engines = require('../lib/engines'),
 
-	Template = require('yui/template').Template;
+	Template = require('yui/template-base').Template;
 
 describe('precompiler', function() {
 	var engineIds = Object.keys(Engines);

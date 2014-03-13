@@ -1,6 +1,6 @@
 var expect = require('chai').expect,
 	stream = require('stream'),
-	Template = require('yui/template').Template,
+	Template = require('yui/template-base').Template,
 
 	testUtil = require('./test-util'),
 

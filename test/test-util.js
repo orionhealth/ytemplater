@@ -2,7 +2,7 @@ var concat = require('concat-stream'),
 	fs = require('fs'),
 	path = require('path'),
 	Q = require('q'),
-	Template = require('yui/template').Template,
+	Template = require('yui/template-base').Template,
 
 	Engines = require('../lib/engines'),
 
