@@ -1,3 +1,5 @@
+/* jshint expr:true */
+
 var expect = require('chai').expect,
 	path = require('path'),
 	Q = require('q'),
@@ -12,27 +14,51 @@ describe('ytemplater', function() {
 
 	describe('precompile()', function() {
 		var TEMPLATES_DIR = testUtil.TEMPLATES_DIR,
-			templates = [path.join(TEMPLATES_DIR, 'name.handlebars')];
+			templates = [path.join(TEMPLATES_DIR, 'name.handlebars')],
+			cwd = process.cwd();
 
 		beforeEach(testUtil.mockFileSystem);
 		afterEach(testUtil.restoreFileSystem);
 
-		it('should write a JavaScript file to the given output dir', function() {
-			var testOutputDir = path.join(process.cwd(), 'test-output');
+		it('should write a JavaScript file to the given file', function() {
+			var testOutputFile = path.join(cwd, 'test-output-file.js');
 
-			return mkdirp(testOutputDir) // TODO: ytemplater should do this
+			expect(testOutputFile).to.not.be.a.path;
+
+			return ytemplater.precompile(templates, { out: testOutputFile })
 				.then(function() {
-					return ytemplater.precompile(templates, { out: testOutputDir });
-				})
+					expect(testOutputFile).to.be.a.file;
+				});
+		});
+
+		it('should write a JavaScript file to the given output dir with a default filename of `templates.js`', function() {
+			var testOutputDir = path.join(cwd, 'test-output');
+
+			expect(testOutputDir).to.not.be.a.path;
+
+			return ytemplater.precompile(templates, { out: testOutputDir })
 				.then(function() {
-					expect(path.join(testOutputDir, 'templates.js')).to.be.a.file();
+					expect(path.join(testOutputDir, 'templates.js')).to.be.a.file;
+				});
+		});
+
+		it('should write a JavaScript file to the given output dir with a filename based on the given `moduleName`', function() {
+			var testOutputDir = path.join(cwd, 'test-output'),
+				moduleName = 'test-module';
+
+			return ytemplater.precompile(templates, {
+						moduleName: moduleName,
+						out: testOutputDir
+					})
+				.then(function() {
+					expect(path.join(testOutputDir, moduleName + '.js')).to.be.a.file;
 				});
 		});
 
 		it('should write a JavaScript file to the cwd if no output dir is specified', function() {
 			return ytemplater.precompile(templates)
 				.then(function() {
-					expect(path.join(process.cwd(), 'templates.js')).to.be.a.file();
+					expect(path.join(cwd, 'templates.js')).to.be.a.file;
 				});
 		});
 	});
