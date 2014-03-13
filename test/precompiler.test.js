@@ -12,6 +12,9 @@ var concat = require('concat-stream'),
 describe('precompiler', function() {
 	var engineIds = Object.keys(Engines);
 
+	beforeEach(testUtil.mockFileSystem);
+	afterEach(testUtil.restoreFileSystem);
+
 	it('should export a namespace', function() {
 		expect(precompiler).to.be.a('object');
 	});

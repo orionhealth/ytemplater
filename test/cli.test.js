@@ -1,8 +1,14 @@
-var expect = require('chai').expect,
-
+var _ = require('lodash'),
+	cliSpy = require('cli-spy'),
+	expect = require('chai').expect,
 	path = require('path'),
+	Q = require('q'),
 
-	cliSpy = require('cli-spy');
+	mkdirp = Q.nfbind(require('mkdirp')),
+	rimraf = Q.nfbind(require('rimraf')),
+	writeFile = Q.nfbind(require('fs').writeFile),
+
+	testUtil = require('./test-util');
 
 describe('ytemplater CLI', function() {
 	var cli = cliSpy('./lib/cli', function() {
@@ -13,18 +19,42 @@ describe('ytemplater CLI', function() {
 				return Q();
 			};
 		}),
-		templatesDir = path.join(__dirname, 'templates');
+		testDir = path.join(__dirname, '___test___'),
+		templatesDir = path.join(testDir, 'templates'),
+		templateFiles = ['name.handlebars', 'food.handlebars'];
+
+	function cleanTestDir() {
+		return rimraf(testDir);
+	}
+
+	function createTestFiles() {
+		return cleanTestDir()
+			.then(function() {
+				return mkdirp(templatesDir);
+			})
+			.then(function() {
+				return Q.all(_.map(templateFiles, function(filename) {
+					return writeFile(path.join(templatesDir, filename), '');
+				}));
+			});
+	}
+
+	afterEach(cleanTestDir);
 
 	it('should expand globs to the list of applicable files', function() {
-		return cli.exec(path.join(templatesDir, '*.handlebars'))
+		return createTestFiles()
+			.then(function() {
+				return cli.exec(path.join(templatesDir, '*.handlebars'));
+			})
 			.then(function(cliInfo) {
 				var files = cliInfo.args[0];
 
 				expect(files).to.be.a('array');
 				expect(files).to.have.length(2);
 
-				expect(files).to.contain(path.join(templatesDir, 'name.handlebars'));
-				expect(files).to.contain(path.join(templatesDir, 'food.handlebars'));
+				templateFiles.forEach(function(templateFile) {
+					expect(files).to.contain(path.join(templatesDir, templateFile));
+				});
 			});
 	});
 

@@ -1,12 +1,40 @@
-var concat = require('concat-stream'),
+var _ = require('lodash'),
+	concat = require('concat-stream'),
 	fs = require('fs'),
+	mock = require('mock-fs'),
 	path = require('path'),
 	Q = require('q'),
 	Template = require('yui/template-base').Template,
 
 	Engines = require('../lib/engines'),
 
-	TEST_TEMPLATES_DIR = './test/templates/';
+	TEMPLATES = {
+		'food.handlebars': 'My favorite food is {{food}}.\n',
+		'food.micro': 'My favorite food is <%= this.food %>.\n',
+		'name.handlebars': 'Hi! My name is {{name}}!\n',
+		'name.micro': 'Hi! My name is <%= name %>!\n'
+	},
+
+	TEMPLATES_DIR = 'templates',
+
+	mockFileSystemContents = {};
+
+exports.TEMPLATES_DIR = TEMPLATES_DIR;
+
+mockFileSystemContents[TEMPLATES_DIR] = _.merge(TEMPLATES, {
+	'not-a-template.txt': 'In ur test data, being an error case.'
+});
+
+function mockFileSystem() {
+	mock(mockFileSystemContents);
+}
+exports.mockFileSystem = mockFileSystem;
+
+
+function restoreFileSystem() {
+	mock.restore();
+}
+exports.restoreFileSystem = restoreFileSystem;
 
 
 function getExpectedEngineDeclarationCode(engineId) {
@@ -25,13 +53,13 @@ exports.getExpectedTemplateReviveCode = getExpectedTemplateReviveCode;
 
 
 function getTestTemplate(templateName, engineId) {
-	return fs.readFileSync(getTestTemplateFilePath(templateName, engineId), { encoding: 'utf8' });
+	return TEMPLATES[templateName + '.' + engineId];
 }
 exports.getTestTemplate = getTestTemplate;
 
 
 function getTestTemplateFilePath(templateName, engineId) {
-	return path.join(TEST_TEMPLATES_DIR, templateName + '.' + engineId);
+	return path.join(TEMPLATES_DIR, templateName + '.' + engineId);
 }
 exports.getTestTemplateFilePath = getTestTemplateFilePath;
 

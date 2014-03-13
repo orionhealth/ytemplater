@@ -10,6 +10,9 @@ var expect = require('chai').expect,
 describe('read-template-files', function() {
 	var engineIds = Object.keys(Engines);
 
+	beforeEach(testUtil.mockFileSystem);
+	afterEach(testUtil.restoreFileSystem);
+
 	it('should export a function', function() {
 		expect(readTemplateFiles).to.be.a('function');
 	});
