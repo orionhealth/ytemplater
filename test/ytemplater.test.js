@@ -1,6 +1,7 @@
 /* jshint expr:true */
 
 var expect = require('chai').expect,
+	mock = require('mock-fs'),
 	path = require('path'),
 	Q = require('q'),
 
@@ -59,6 +60,46 @@ describe('ytemplater', function() {
 			return ytemplater.precompile(templates)
 				.then(function() {
 					expect(path.join(cwd, 'templates.js')).to.be.a.file;
+				});
+		});
+	});
+
+	describe('precompileShifterModule()', function() {
+		afterEach(function() {
+			mock.restore();
+		});
+
+		it('should write a JavaScript file to the `js` directory of the given shifter module', function() {
+			mock({
+				'shifter-module': {
+					'build.json': JSON.stringify({
+						ytemplater: {
+							'test-handlebars-module': {
+								templateFiles: [
+									'food.handlebars',
+									'name.handlebars'
+								]
+							},
+							'test-micro-module': {
+								templateFiles: [
+									'food.micro',
+									'name.micro'
+								]
+							}
+						}
+					}),
+					'templates': testUtil.TEMPLATES
+				}
+			});
+
+			return expect(ytemplater.precompileShifterModule('shifter-module')).to.be.fulfilled
+				.then(function() {
+					var jsFolder = path.join('shifter-module', 'js');
+
+					expect(jsFolder).to.be.a.file;
+
+					expect(path.join(jsFolder, 'test-handlebars-module.js')).to.be.a.file;
+					expect(path.join(jsFolder, 'test-micro-module.js')).to.be.a.file;
 				});
 		});
 	});

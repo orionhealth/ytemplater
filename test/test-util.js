@@ -19,6 +19,7 @@ var _ = require('lodash'),
 
 	mockFileSystemContents = {};
 
+exports.TEMPLATES = TEMPLATES;
 exports.TEMPLATES_DIR = TEMPLATES_DIR;
 
 mockFileSystemContents[TEMPLATES_DIR] = _.merge(TEMPLATES, {
