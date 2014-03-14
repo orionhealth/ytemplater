@@ -6,6 +6,7 @@
   "bin": {
     "ytemplater": "./bin/ytemplater"
   },
+  "keywords": ["yui", "build", "cli", "tool", "template", "handlebars", "precompile"],
   "scripts": {
     "test": "istanbul test --print both ./node_modules/mocha/bin/_mocha test/*.js",
     "posttest": "istanbul check-coverage --statements 90 --functions 90 --branches 90 --lines 90"
@@ -14,7 +15,15 @@
     "type": "git",
     "url": "git@github.com:orionhealth/ytemplater.git"
   },
+  "author": {
+    "name": "James Bunt",
+    "email": "james.bunt@gmail.com"
+  },
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/orionhealth/ytemplater/issues"
+  },
+  "homepage": "https://github.com/orionhealth/ytemplater",
   "dependencies": {
     "yui": "^3.15.0",
     "q": "~1.0.0",
