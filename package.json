@@ -1,12 +1,20 @@
 {
   "name": "ytemplater",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Node.js utility for precompiling templates for use with YUI's Y.Template.",
   "main": "./lib/ytemplater.js",
   "bin": {
     "ytemplater": "./bin/ytemplater"
   },
-  "keywords": ["yui", "build", "cli", "tool", "template", "handlebars", "precompile"],
+  "keywords": [
+    "yui",
+    "build",
+    "cli",
+    "tool",
+    "template",
+    "handlebars",
+    "precompile"
+  ],
   "scripts": {
     "test": "istanbul test --print both ./node_modules/mocha/bin/_mocha test/*.js",
     "posttest": "istanbul check-coverage --statements 90 --functions 90 --branches 90 --lines 90"
