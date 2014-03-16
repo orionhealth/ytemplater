@@ -12,9 +12,14 @@ var _ = require('lodash'),
 
 describe('ytemplater CLI', function() {
 	var cli = cliSpy('./lib/cli', function() {
-			var Q = require('q');
-			// stub the precompile method to print the passed args to stdout so the test can inspect them
-			require('./lib/ytemplater').precompile = function() {
+			var Q = require('q'),
+				ytemplater = require('./lib/ytemplater');
+			// stub the precompile & precompileShifterModule methods to print the passed args to stdout so the test can inspect them
+			ytemplater.precompile = function() {
+				/*__spy__*/
+				return Q();
+			};
+			ytemplater.precompileShifterModule = function() {
 				/*__spy__*/
 				return Q();
 			};
@@ -47,7 +52,9 @@ describe('ytemplater CLI', function() {
 				return cli.exec(path.join(templatesDir, '*.handlebars'));
 			})
 			.then(function(cliInfo) {
-				var files = cliInfo.args[0];
+				var files = cliInfo.executions[0].args[0];
+
+				expect(cliInfo.executions).to.have.length(1);
 
 				expect(files).to.be.a('array');
 				expect(files).to.have.length(2);
@@ -62,7 +69,9 @@ describe('ytemplater CLI', function() {
 		var outputDir = 'test-output-dir';
 		return cli.exec('*.micro --out ' + outputDir)
 			.then(function(cliInfo) {
-				var options = cliInfo.args[1];
+				var options = cliInfo.executions[0].args[1];
+
+				expect(cliInfo.executions).to.have.length(1);
 
 				expect(options).to.contain.keys(['out']);
 				expect(options.out).to.equal(outputDir);
@@ -73,7 +82,9 @@ describe('ytemplater CLI', function() {
 		var outputDir = 'test-output-dir';
 		return cli.exec('*.micro -o ' + outputDir)
 			.then(function(cliInfo) {
-				var options = cliInfo.args[1];
+				var options = cliInfo.executions[0].args[1];
+
+				expect(cliInfo.executions).to.have.length(1);
 
 				expect(options).to.contain.keys(['out']);
 				expect(options.out).to.equal(outputDir);
@@ -83,10 +94,46 @@ describe('ytemplater CLI', function() {
 	it('should default the output directory to the cwd', function() {
 		return cli.exec('*.micro')
 			.then(function(cliInfo) {
-				var options = cliInfo.args[1];
+				var options = cliInfo.executions[0].args[1];
+
+				expect(cliInfo.executions).to.have.length(1);
 
 				expect(options).to.contain.keys(['out']);
 				expect(options.out).to.equal(process.cwd());
+			});
+	});
+
+	it('should call precompileShifterModule once for each directory specified when set to shifter module mode via -s', function() {
+		var dirs = ['dir1', 'dir2'];
+		return cli.exec(dirs[0] + ' -s ' + dirs[1]) // Ensure order of dirs/flags doesn't matter
+			.then(function(cliInfo) {
+				var executions = cliInfo.executions;
+
+				expect(executions).to.have.length(dirs.length);
+
+				dirs.forEach(function(dir, index) {
+					var args = executions[index].args;
+
+					expect(args).to.have.length(1);
+					expect(args[0]).to.equal(dir);
+				});
+			});
+	});
+
+	it('should call precompileShifterModule once for each directory specified when set to shifter module mode via --shifter', function() {
+		var dirs = ['dir1', 'dir2'];
+		return cli.exec(dirs[0] + ' --shifter ' + dirs[1]) // Ensure order of dirs/flags doesn't matter
+			.then(function(cliInfo) {
+				var executions = cliInfo.executions;
+
+				expect(executions).to.have.length(dirs.length);
+
+				dirs.forEach(function(dir, index) {
+					var args = executions[index].args;
+
+					expect(args).to.have.length(1);
+					expect(args[0]).to.equal(dir);
+				});
 			});
 	});
 });
