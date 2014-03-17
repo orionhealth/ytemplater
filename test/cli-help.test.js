@@ -6,8 +6,8 @@ var expect = require('chai').expect,
 describe('ytemplater CLI', function() {
 	function expectUsageString(usage) {
 		expect(usage).to.contain('Usage:');
-		expect(usage).to.contain('node ./bin/ytemplater [options] files...');
-		expect(usage).to.contain('node ./bin/ytemplater --shifter dirs...');
+		expect(usage).to.contain('ytemplater [options] files...');
+		expect(usage).to.contain('ytemplater --shifter dirs...');
 		expect(usage).to.contain('-o, --out          File or directory to write the precompiled templates to');
 		expect(usage).to.contain('-m, --module-name  Used to determine the name of the file to write to when specifying a directory for -o');
 		expect(usage).to.contain('-s, --shifter      Find and precompile templates in the given shifter module directories; all other options are ignored');
