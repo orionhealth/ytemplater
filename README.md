@@ -25,7 +25,7 @@ ytemplater.precompile(['my-template.handlebars', 'my-other-template.micro'], {
 ```
 
 - **files** {String[]} array of paths to the templates to precompile. Template files should be named according to their template engine i.e. `*.handlebars`, `*.micro`.
-- **options** {Object} additional config
+- **options** {Object} additional config.
   - **out** {String} file or directory to write the precompiled template JavaScript to. Defaults to `process.cwd()`.
   - **moduleName** {String} name of the module that hosts these precompiled templates - used to determine the name of the JavaScript file to write to (unless `options.out` is a .js file). If not specified and `options.out` is omitted or a directory, ytemplater will write to a file called "templates.js".
 
