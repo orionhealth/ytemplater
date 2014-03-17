@@ -69,12 +69,8 @@ describe('ytemplater CLI', function() {
 		var outputDir = 'test-output-dir';
 		return cli.exec('*.micro --out ' + outputDir)
 			.then(function(cliInfo) {
-				var options = cliInfo.executions[0].args[1];
-
 				expect(cliInfo.executions).to.have.length(1);
-
-				expect(options).to.contain.keys(['out']);
-				expect(options.out).to.equal(outputDir);
+				expect(cliInfo.executions[0].args[1]).to.have.property('out', outputDir);
 			});
 	});
 
@@ -82,24 +78,34 @@ describe('ytemplater CLI', function() {
 		var outputDir = 'test-output-dir';
 		return cli.exec('*.micro -o ' + outputDir)
 			.then(function(cliInfo) {
-				var options = cliInfo.executions[0].args[1];
-
 				expect(cliInfo.executions).to.have.length(1);
-
-				expect(options).to.contain.keys(['out']);
-				expect(options.out).to.equal(outputDir);
+				expect(cliInfo.executions[0].args[1]).to.have.property('out', outputDir);
 			});
 	});
 
 	it('should default the output directory to the cwd', function() {
 		return cli.exec('*.micro')
 			.then(function(cliInfo) {
-				var options = cliInfo.executions[0].args[1];
-
 				expect(cliInfo.executions).to.have.length(1);
+				expect(cliInfo.executions[0].args[1]).to.have.property('out', process.cwd());
+			});
+	});
 
-				expect(options).to.contain.keys(['out']);
-				expect(options.out).to.equal(process.cwd());
+	it('should pass the `moduleName` when specified via -m', function() {
+		var expectedModuleName = 'my-test-module';
+		return cli.exec('*.micro -m ' + expectedModuleName)
+			.then(function(cliInfo) {
+				expect(cliInfo.executions).to.have.length(1);
+				expect(cliInfo.executions[0].args[1]).to.have.property('moduleName', expectedModuleName);
+			});
+	});
+
+	it('should pass the `moduleName` when specified via --module-name', function() {
+		var expectedModuleName = 'my-test-module';
+		return cli.exec('*.micro --module-name ' + expectedModuleName)
+			.then(function(cliInfo) {
+				expect(cliInfo.executions).to.have.length(1);
+				expect(cliInfo.executions[0].args[1]).to.have.property('moduleName', expectedModuleName);
 			});
 	});
 
