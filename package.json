@@ -1,6 +1,6 @@
 {
   "name": "ytemplater",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Node.js utility for precompiling templates for use with YUI's Y.Template.",
   "main": "./lib/ytemplater.js",
   "bin": {
