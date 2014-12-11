@@ -47,15 +47,18 @@ Returns a [Q promise](https://github.com/kriskowal/q) that is resolved once the 
 
 #### Precompilation and Line Endings
 
-By default, YTemplater precompiles the templates using the same line endings as the ones set in the corresponding .handlebar or .micro file. Consider this if you are planning on versioning any of the precompiled files in a collaborative cross-platform project, as different explicit line ending might cause versioned template files to be dirty.
+By default, YTemplater precompiles the templates using the same line endings as the ones set in the corresponding .handlebar or .micro file. Consider this if you are planning on versioning any of the precompiled files in a collaborative cross-platform project, as different explicit line endings might cause versioned template files to be dirty.
 
-For example:
+The following is an example of precompiled template code with explicit Windows line endings:
 
 ```
 function program1(depth0,data) {
-  
+
   var buffer = "", stack1;
+
+  // explicit line feed within the generated code
   buffer += "\r\n               <select name=\"acuity\" id=\"";
+  
   if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
   else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
   buffer += escapeExpression(stack1)
