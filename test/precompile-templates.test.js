@@ -89,8 +89,14 @@ describe('precompile-templates', function() {
 		it('should precompile to JavaScript that is revivable with the YUI ' + engineInfo.className + ' Template engine', function(done) {
 			precompile().done(function(templateData) {
 				var templater = new Template(engineInfo.engine),
-					templateFn = templater.revive(evalTemplateFunctionString(templateData.precompiled)),
-					data = { food: 'cake' };
+					data = { food: 'cake' },
+					templateFn;
+
+				if (engineInfo.className === 'Y.Handlebars') {
+					templateFn = templater.revive(evalTemplateFunctionString(templateData.precompiled), templater.engine);
+				} else {
+					templateFn = templater.revive(evalTemplateFunctionString(templateData.precompiled));
+				}
 
 				expect(templateFn(data)).to.equal('My favorite food is cake.\n');
 

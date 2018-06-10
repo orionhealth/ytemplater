@@ -45,6 +45,28 @@ ytemplater.precompileShifterModule('my-shifter-module/');
 
 Returns a [Q promise](https://github.com/kriskowal/q) that is resolved once the JavaScript file(s) have been written (or rejected in the event of an error).
 
+#### Precompilation and Line Endings
+
+By default, YTemplater precompiles the templates using the same line endings as the ones set in the corresponding .handlebar or .micro file. Consider this if you are planning on versioning any of the precompiled files in a collaborative cross-platform project, as different explicit line endings might cause versioned template files to be dirty.
+
+The following is an example of precompiled template code with explicit Windows line endings:
+
+```
+function program1(depth0,data) {
+
+  var buffer = "", stack1;
+
+  // explicit line feed within the generated code
+  buffer += "\r\n               <select name=\"acuity\" id=\"";
+  
+  if (stack1 = helpers.id) { stack1 = stack1.call(depth0, {hash:{},data:data}); }
+  else { stack1 = depth0.id; stack1 = typeof stack1 === functionType ? stack1.apply(depth0) : stack1; }
+  buffer += escapeExpression(stack1)
+    + "\">\r\n                   <option value=\"\" selected=\"selected\"/>\r\n               </select>\r\n           ";
+  return buffer;
+  }
+```
+
 #### build.json Reference
 
 YTemplater will look for a `ytemplater` section in the shifter module's `build.json` to determine what template modules to build. This section should contain one or more declared template modules (by module name) each containing a `templateFiles` array with the list of templates (paths to template files relative to the `templates` sub-directory of the shifter module dir) to precompile for that module.
